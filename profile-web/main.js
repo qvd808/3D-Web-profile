@@ -1,28 +1,46 @@
 import "./style.css";
+
 import * as THREE from "three";
 
-//Get the canvas from index.html
-const canvas = document.querySelector("#c");
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-//Create camera, renderer, scene
-const renderer = new THREE.WebGL1Renderer({ canvas });
-const camera = new THREE.PerspectiveCamera(75, 2, 0.1, 50);
-camera.position.z = 2;
+//Always need three objects scene, camera and renderer
+
 const scene = new THREE.Scene();
 
-const geomery = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x44aa88 });
-const cube = new THREE.Mesh(geomery, material);
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector("#c"),
+});
+
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.position.setZ(30);
+
+//Create objects
+const geometry = new THREE.BoxGeometry(5, 5, 5);
+const material = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    wireframe: true,
+});
+const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
+
 renderer.render(scene, camera);
 
-function render(time) {
-  time *= 0.001;
-  cube.rotation.x = time;
-  cube.rotation.y = time;
+function animate() {
+    requestAnimationFrame(animate);
+  cube.rotation.z += 0.05;
+  cube.rotation.x += 0.05;
 
-  renderer.render(scene, camera);
-  requestAnimationFrame(render);
+
+    renderer.render(scene, camera);
 }
 
-requestAnimationFrame(render); //calling recursive to always rendered it and make the animation
+animate();
